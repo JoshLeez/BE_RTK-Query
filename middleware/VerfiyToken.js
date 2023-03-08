@@ -6,7 +6,7 @@ const verifyToken = (req,res,next) =>{
     if(token == null) return res.sendStatus(401);
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=>{
         if(err) return res.status(401).json({
-            messsage : "Your login session ended, please Login again"
+            message : "Your login session ended, please Login again"
         });
         req.email = decoded.email;
         next();
