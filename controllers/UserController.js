@@ -126,16 +126,33 @@ const getUserById = async(req,res)=>{
     }
 } 
 
-const createUser = async(req,res)=>{
-    try{
-        const data = await User.create(req.body);
-        res.status(201).json({
-            Success: "User Created",
-            data : data })
-    }catch(error){
-        console.log(error.message)
+const createUser = async (req, res) => {
+    try {
+      const {name, email, gender } = req.body;
+  
+      function sanitizeGender(gender) {
+        const allowedGenders = ["Male", "Female"];
+        return allowedGenders.includes(gender) ? gender : null;
+      }
+      const sanitizedGender = sanitizeGender(gender); // Perform any necessary sanitization
+  
+      if (!sanitizedGender) {
+        return res.status(400).json({ error: 'Invalid gender value' });
+      }
+  
+      // Create the user with validated and sanitized data
+      const data = await User.create({ name, email, gender: sanitizedGender });
+  
+      res.status(201).json({
+        success: 'User Created',
+        data: data,
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: 'Server error' });
     }
-} 
+  };
+
 
 const updateUser = async(req,res)=>{
     try{
